@@ -3,11 +3,12 @@ import math
 from tkinter import Canvas, PhotoImage
 
 
+
 if __name__ == "__main__":
 
-    WIDTH, HEIGHT = 600, 600
 
-    window = tk.Tk()
+    WIDTH, HEIGHT = 600, 600
+    window = tk.Tk() 
     window.title("Mandelbrodt Visualisation")
     window.resizable(False, False)
 
@@ -16,10 +17,7 @@ if __name__ == "__main__":
     window.rowconfigure(0, minsize=600)
     window.rowconfigure(1, minsize=200)
 
-    #todo: make an overview on sizing, stickyness, orientation etc options
-    #todo: handle frame and row, col sizes
-    #todo: handle or prevent window resizing
-    #todo: add padding where necessary
+
 
     #configure and display first frame containing the canvas
     fr_upper = tk.Frame(window, borderwidth=5, relief=tk.GROOVE) #todo: make frame bigger than canvas
@@ -126,7 +124,4 @@ if __name__ == "__main__":
             if x%2 == 0 and y%2 == 1:
                 img.put("#ffffff", (x,y))'
     '''
-
-
-
     window.mainloop()
