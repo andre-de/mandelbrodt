@@ -154,6 +154,8 @@ if __name__ == "__main__":
 
     sld0.set(1000)
 
+    # todo: access pixels on the canvas via their mathematical Im, Re coordinate
+
 
 
 
