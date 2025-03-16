@@ -110,17 +110,11 @@ if __name__ == "__main__":
     btn3.grid(row=1, column=2, sticky="e")
     btn4.grid(row=2, column=1, sticky="s")
 
-
-
     btn0.pack(fill=tk.BOTH)
     fr01_in.pack()
     btn5.pack(fill=tk.BOTH)
 
-
-
-
     fr01.grid(row=0, column=1, sticky="nsew")
-
 
     #configure and display the fourth frame containing the start button and feedback
     fr11 = tk.Frame(fr_lower)
@@ -154,9 +148,7 @@ if __name__ == "__main__":
 
     sld0.set(1000)
 
-    # todo: access pixels on the canvas via their mathematical Im, Re coordinate
-
-
+    # todo: access pixels on the canvas via their mathematical Im, Re coordinates
 
 
     '''canvas = Canvas(window, width=WIDTH, height=HEIGHT, bg="#000000")
