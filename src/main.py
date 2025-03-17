@@ -149,7 +149,7 @@ if __name__ == "__main__":
     sld0.set(1000)
 
     # todo: access pixels on the canvas via their mathematical Im, Re coordinates
-
+    # does the windows refresh every time a pixel is drawn autmatically?
 
     '''canvas = Canvas(window, width=WIDTH, height=HEIGHT, bg="#000000")
     canvas.pack()
