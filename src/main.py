@@ -44,9 +44,11 @@ if __name__ == "__main__":
         
     def run_calculation():
         print("Run calculation")
+
         max_iteration = sld0.get()
         for x_canvas in range(WIDTH):
             for y_canvas in range(HEIGHT):
+                fractal._img.put("#000000", (x_canvas, y_canvas)) #clear pixel
                 xa = fractal._x_min + x_canvas * (fractal._x_max - fractal._x_min) / WIDTH
                 ya = fractal._y_min + y_canvas * (fractal._y_max - fractal._y_min) / HEIGHT
                 x = 0
