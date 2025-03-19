@@ -17,8 +17,13 @@ if __name__ == "__main__":
     window.rowconfigure(0, minsize=600)
     window.rowconfigure(1, minsize=200)
 
+
+
     class Fractal:
         def __init__(self, x_min, x_max, y_min, y_max, width, height, frame):
+
+            # remove underscores since these members are not private or add getter/setter function
+
             self._x_min = x_min
             self._x_max = x_max
             self._y_min = y_min
@@ -28,57 +33,127 @@ if __name__ == "__main__":
             self._frame = frame
             self._canvas = Canvas(frame, width=WIDTH, height=HEIGHT, bg="#000000")
             self._img = PhotoImage(width=WIDTH, height=HEIGHT)
+
+        #this method is not in use as of right now
+        def set_coords(self, x_min, x_max, y_min, y_max):
+            self._x_min = x_min
+            self._x_max = x_max
+            self._y_min = y_min
+            self._y_max = y_max
+
+        def run_calculation(self):
+            print("Run calculation")
+
+            #get coordinates from entry elements
+            self._x_min = float(ent1.get())
+            self._x_max = float(ent2.get())
+            self._y_min = float(ent3.get())
+            self._y_max = float(ent4.get())
+
+            max_iteration = sld0.get()
+            for x_canvas in range(WIDTH):
+                for y_canvas in range(HEIGHT):
+                    self._img.put("#000000", (x_canvas, y_canvas)) #clear pixel
+                    xa = self._x_min + x_canvas * (self._x_max - self._x_min) / WIDTH
+                    ya = self._y_min + y_canvas * (self._y_max - self._y_min) / HEIGHT
+                    x = 0
+                    y = 0
+                    iteration = 0
+                    while (x+x + y*y <=4 and iteration < max_iteration):
+                        xtemp = x*x - y*y + xa
+                        y = 2*x*y + ya
+                        x = xtemp
+                        iteration += 1
+                    if iteration == max_iteration:
+                        self._img.put("#ffffff", (x_canvas, y_canvas))
+
+
+            return
           
     
     fr_upper = tk.Frame(window, borderwidth=5, relief=tk.GROOVE) #todo: make frame bigger than canvas
     fractal = Fractal(-2.2, 1.2, -1.0, 1, WIDTH, HEIGHT, fr_upper)
 
+    def set_text(entry_widget, text):
+        entry_widget.delete(0, tk.END)
+        entry_widget.insert(0, text)
+        return
+
+    def coords_to_entry():
+        set_text(ent1, str(fractal._x_min))
+        set_text(ent2, str(fractal._x_max))
+        set_text(ent3, str(fractal._y_min))
+        set_text(ent4, str(fractal._y_max))
+        return
+
     #configure functions
     def zoom_in():
         print("Zoom in")
+        x_min = fractal._x_min
+        x_max = fractal._x_max
+        y_min = fractal._y_min
+        y_max = fractal._y_max
+
+        fractal._x_min = x_min + ((x_max - x_min) * 0.25)
+        fractal._x_max = x_max - ((x_max - x_min) * 0.25)
+        fractal._y_min = y_min + ((y_max - y_min) * 0.25)
+        fractal._y_max = y_max - ((y_max - y_min) * 0.25)
+
+        coords_to_entry()
         return
         
     def zoom_out():
         print("Zoom out")
+        x_min = fractal._x_min
+        x_max = fractal._x_max
+        y_min = fractal._y_min
+        y_max = fractal._y_max
+
+        fractal._x_min = x_min - ((x_max - x_min) * 0.5)
+        fractal._x_max = x_max + ((x_max - x_min) * 0.5)
+        fractal._y_min = y_min - ((y_max - y_min) * 0.5)
+        fractal._y_max = y_max + ((y_max - y_min) * 0.5)
+
+        coords_to_entry()
+
         return
         
-    def run_calculation():
-        print("Run calculation")
 
-        max_iteration = sld0.get()
-        for x_canvas in range(WIDTH):
-            for y_canvas in range(HEIGHT):
-                fractal._img.put("#000000", (x_canvas, y_canvas)) #clear pixel
-                xa = fractal._x_min + x_canvas * (fractal._x_max - fractal._x_min) / WIDTH
-                ya = fractal._y_min + y_canvas * (fractal._y_max - fractal._y_min) / HEIGHT
-                x = 0
-                y = 0
-                iteration = 0
-                while (x+x + y*y <=4 and iteration < max_iteration):
-                    xtemp = x*x - y*y + xa
-                    y = 2*x*y + ya
-                    x = xtemp
-                    iteration += 1
-                if iteration == max_iteration:
-                    fractal._img.put("#ffffff", (x_canvas, y_canvas))
-
-
-        return
 
     def go_up():
         print("Go up")
+        y_min = fractal._y_min
+        y_max = fractal._y_max
+        fractal._y_min = y_min - ((y_max - y_min) * 0.25)
+        fractal._y_max = y_max - ((y_max - y_min) * 0.25)        
+        coords_to_entry()
         return
         
     def go_down():
         print("Go down")
+        y_min = fractal._y_min
+        y_max = fractal._y_max
+        fractal._y_min = y_min + ((y_max - y_min) * 0.25)
+        fractal._y_max = y_max + ((y_max - y_min) * 0.25)        
+        coords_to_entry()
         return
         
     def go_left():
         print("Go left")
+        x_min = fractal._x_min
+        x_max = fractal._x_max
+        fractal._x_min = x_min - ((x_max - x_min) * 0.25)
+        fractal._x_max = x_max - ((x_max - x_min) * 0.25)
+        coords_to_entry()
         return
         
     def go_right():
         print("Go right")
+        x_min = fractal._x_min
+        x_max = fractal._x_max
+        fractal._x_min = x_min + ((x_max - x_min) * 0.25)
+        fractal._x_max = x_max + ((x_max - x_min) * 0.25)
+        coords_to_entry()
         return
 
 
@@ -148,7 +223,7 @@ if __name__ == "__main__":
 
     #configure and display the fourth frame containing the start button and feedback
     fr11 = tk.Frame(fr_lower)
-    btn_start = tk.Button(fr11, text="Run!", command=run_calculation)
+    btn_start = tk.Button(fr11, text="Run!", command=fractal.run_calculation)
     lbl_space= tk.Label(fr11, text=" ")
     lbl_runtime = tk.Label(fr11, text="Runtime:")
     lbl_runtime_val = tk.Label(fr11, text="0 s")
@@ -166,15 +241,10 @@ if __name__ == "__main__":
 
     #prepopulate entry elements and slider with values
 
-    def set_text(entry_widget, text):
-        entry_widget.delete(0, tk.END)
-        entry_widget.insert(0, text)
-        return
+
+
     
-    set_text(ent1, str(fractal._x_min))
-    set_text(ent2, str(fractal._x_max))
-    set_text(ent3, str(fractal._y_min))
-    set_text(ent4, str(fractal._y_max))
+    coords_to_entry()
 
     sld0.set(1000)
 
