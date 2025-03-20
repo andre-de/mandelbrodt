@@ -1,5 +1,6 @@
 import tkinter as tk
 import math
+import time
 from tkinter import Canvas, PhotoImage
 
 
@@ -39,6 +40,7 @@ if __name__ == "__main__":
         fractal._y_max = float(ent4.get())
         max_iteration = sld0.get()
         total_iterations = 0
+        start_time = time.time()
         for x_canvas in range(WIDTH):
             for y_canvas in range(HEIGHT):
                 fractal._img.put("#ffffff", (x_canvas, y_canvas)) #clear pixel
@@ -56,6 +58,7 @@ if __name__ == "__main__":
                     fractal._img.put("#000000", (x_canvas, y_canvas))
                 total_iterations += iteration
         lbl_iterations_val['text'] = str(total_iterations)
+        lbl_runtime_val['text'] = "{0:.2f} s".format(time.time() - start_time)
         return
 
     def set_text(entry_widget, text):
