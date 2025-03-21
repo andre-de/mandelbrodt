@@ -1,5 +1,4 @@
 import tkinter as tk
-import math
 import time
 from tkinter import Canvas, PhotoImage
 
@@ -17,6 +16,9 @@ if __name__ == "__main__":
     window.columnconfigure(1, minsize=200)
     window.rowconfigure(0, minsize=600)
     window.rowconfigure(1, minsize=200)
+
+    # todo: function to turn iteration counter into color code
+
 
     class Fractal:
         def __init__(self, x_min, x_max, y_min, y_max, width, height, frame):
