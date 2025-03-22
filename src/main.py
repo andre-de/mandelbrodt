@@ -6,19 +6,42 @@ from tkinter import Canvas, PhotoImage
 
 if __name__ == "__main__":
 
-
     WIDTH, HEIGHT = 600, 400
+
+    #create and configure the window
     window = tk.Tk() 
     window.title("Mandelbrodt Visualisation")
     window.resizable(False, False)
-
     window.columnconfigure(0, minsize=600)
     window.columnconfigure(1, minsize=200)
     window.rowconfigure(0, minsize=600)
     window.rowconfigure(1, minsize=200)
 
-    # todo: function to turn iteration counter into color code
-
+    def dec_to_hex_str(number):
+        """turn a decimal number into a hex string and add a 0 if needed to make its length even"""
+        key = {0:'0', 1:'1', 2:'2', 3:'3', 4:'4', 5:'5', 6:'6', 7:'7', 8:'8', 9:'9', 10:'a', 11:'b', 12:'c', 13:'d', 14:'e', 15:'f'}
+        result = ""
+        while number>15:
+            rest = number%16
+            number = number // 16
+            result = key[rest] + result
+        result = key[number] + result
+        if len(result)%2 == 1:
+            result = "0" + result
+        return result
+    
+    def create_colors():
+        """create an array filled with rgb color values"""
+        color_memory = []
+        for a in range(1, 200, 5):
+            color_memory.append(["#ffff" + dec_to_hex_str(a)])
+        for a in range(1, 200, 5):
+            color_memory.append(["#" + dec_to_hex_str(a) + "ff" + dec_to_hex_str(a)])
+        for a in range(1, 200, 5):
+            color_memory.append(["#" + dec_to_hex_str(a) + dec_to_hex_str(a) + "ff"])
+        for a in range(1, 200, 5):
+            color_memory.append(["#ff" + dec_to_hex_str(a) + dec_to_hex_str(a)])
+        return color_memory
 
     class Fractal:
         def __init__(self, x_min, x_max, y_min, y_max, width, height, frame):
@@ -41,6 +64,7 @@ if __name__ == "__main__":
         fractal._y_min = float(ent3.get())
         fractal._y_max = float(ent4.get())
         max_iteration = sld0.get()
+        amount_colors = len(colors)
         total_iterations = 0
         start_time = time.time()
         for x_canvas in range(WIDTH):
@@ -58,24 +82,29 @@ if __name__ == "__main__":
                     iteration += 1
                 if iteration == max_iteration:
                     fractal._img.put("#000000", (x_canvas, y_canvas))
+                else:
+                    fractal._img.put(colors[iteration%amount_colors], (x_canvas, y_canvas))
                 total_iterations += iteration
         lbl_iterations_val['text'] = str(total_iterations)
         lbl_runtime_val['text'] = "{0:.2f} s".format(time.time() - start_time)
         return
 
+    
     def set_text(entry_widget, text):
+        """push new content into an entry widget"""
         entry_widget.delete(0, tk.END)
         entry_widget.insert(0, text)
         return
 
     def coords_to_entry():
+        """read the current fractal coordinates and push them to the corresponding entry widgets"""
         set_text(ent1, str(fractal._x_min))
         set_text(ent2, str(fractal._x_max))
         set_text(ent3, str(fractal._y_min))
         set_text(ent4, str(fractal._y_max))
         return
 
-    #configure functions
+    #zoom and shift functions
     def zoom_in():
         print("Zoom in")
         x_min = fractal._x_min
@@ -139,11 +168,9 @@ if __name__ == "__main__":
         return
 
 
-    #configure and display first frame containing the canvas
-
+    #configure and display the upper frame containing the canvas, create the fractal
     fr_upper = tk.Frame(window, borderwidth=5, relief=tk.GROOVE) 
     fractal = Fractal(-2.2, 1.2, -1.0, 1, WIDTH, HEIGHT, fr_upper)
-
     fractal._canvas.pack()
     fractal._canvas.create_image((WIDTH/2, HEIGHT/2), image=fractal._img, state="normal")
     fr_upper.pack(fill=tk.BOTH)
@@ -152,10 +179,7 @@ if __name__ == "__main__":
     fr_lower.columnconfigure(0, minsize=220)
     fr_lower.columnconfigure([1,2], minsize=150)
 
-    #configure and display second frame containing the iterations and coordinates
-    #todo: create labels and entries via loop as in address_form.py
-    #todo: preset slider with value
-
+    #configure and display second frame containing the iterations slider and coordinates
     fr10 = tk.Frame(fr_lower)
     lbl0 = tk.Label(fr10, text="max. Iteration per Pixel")
     lbl1 = tk.Label(fr10, text="x_min")
@@ -181,16 +205,11 @@ if __name__ == "__main__":
 
     fr10.grid(row=0, column=0, sticky="nsew")
 
-    #configure and display the third frame containing the zoom controls
+    #configure and display the third frame containing the zoom and shift controls
     fr01 = tk.Frame(fr_lower)
-
-    #todo: replace with arrow symbols
-    #add button commands
     btn0 = tk.Button(fr01, text="Zoom in", command=zoom_in)
     btn5 = tk.Button(fr01, text="Zoom out", command=zoom_out)
-
     fr01_in = tk.Frame(fr01)
-
     btn1 = tk.Button(fr01_in, text="^", command=go_up)
     btn2 = tk.Button(fr01_in, text="<", command=go_left)
     btn3 = tk.Button(fr01_in, text=">", command=go_right)
@@ -199,11 +218,9 @@ if __name__ == "__main__":
     btn2.grid(row=1, column=0, sticky="w")
     btn3.grid(row=1, column=2, sticky="e")
     btn4.grid(row=2, column=1, sticky="s")
-
     btn0.pack(fill=tk.BOTH)
     fr01_in.pack()
     btn5.pack(fill=tk.BOTH)
-
     fr01.grid(row=0, column=1, sticky="nsew")
 
     #configure and display the fourth frame containing the start button and feedback
@@ -220,16 +237,11 @@ if __name__ == "__main__":
     lbl_runtime_val.pack()
     lbl_iterations.pack()
     lbl_iterations_val.pack()
-
     fr11.grid(row=0, column=2, sticky="nsew")
 
 
-    #prepopulate entry elements and slider with values
-
+    #prepopulate entry elements and slider with values, create colors, start event handler
     coords_to_entry()
-    sld0.set(100)
-
-
-            
-    
+    colors = create_colors()
+    sld0.set(1000)
     window.mainloop()
